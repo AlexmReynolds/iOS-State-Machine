@@ -20,31 +20,68 @@
     if (self) {
         // Custom initialization
 
-
     }
     return self;
 }
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    [self setupStateObject];
+	// Do any additional setup after loading the view.
+}
+
+-(void) setupSuperState
+{
     [self setupStateMachine:@{
+         @"initialState": @"initializing",
+         @"states":@{
+             @"initializing":@{
+               iStateAllowedTransitions: @[@"loaded"],
+                 iStateAllowedMethods  : @[@"foo:", @"bar", @"foo:bar:"]
+             },
+             @"loaded":@{
+               iStateAllowedTransitions: @[],
+                 iStateAllowedMethods  : @[@"foo:"]
+             }
+         },
      
-        @"states":@{
-            @"initializing":@{
-                @"allowedTransitions": @[],
-                @"allowedMethods"  : @[@"foo", @"bar"]
-            },
-            @"loaded":@{
-                @"allowedTransitions": @[],
-                @"allowedMethods"  : @[@"foo"]
-            }
-        }
-     
-     }];
+     }] ;
+    
     
     [super viewDidLoad];
-    [self foo];
+    
+    [self foo:@"tim"];
+    [self foo:@"test" bar:@[@1,@2]];
     [self bar];
-	// Do any additional setup after loading the view.
+}
+
+-(void) setupStateObject
+{
+        stateMachine = [[iState alloc ]initStateMachineForObject:self withOptions:@{
+            @"initialState": @"initializing",
+            @"states":@{
+                @"initializing":@{
+                    iStateAllowedTransitions: @[@"loaded"],
+                    iStateAllowedMethods  : @[@"foo:", @"bar", @"foo:bar:"]
+                },
+                @"loaded":@{
+                    iStateAllowedTransitions: @[],
+                    iStateAllowedMethods  : @[@"foo:"]
+                }
+            },
+    
+         }] ;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(methodHanded:) name:@"handled" object:nil];
+    
+    
+    if([stateMachine handle:@selector(foo:) withArguments:@[@"tom"]]){
+        NSLog(@"handle");
+    }
+    if([stateMachine handle:@selector(foo:bar:) withArguments:@[@"tom",@[@1,@2,@3]]]){
+        NSLog(@"handle");
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -53,11 +90,24 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)foo
+-(void)foo:(NSString *)name
 {
-    NSLog(@"child foo");
+    NSLog(@"child foo %@",name);
 }
 -(void)bar{
     NSLog(@"child bar");
+}
+-(void)foo:(NSString *)name bar:(NSArray *)last
+{
+    NSLog(@"%@ %@", name, last);
+}
+
+
+#pragma mark - events
+
+-(void)methodHanded:(NSNotification*)notification
+{
+    NSDictionary *data = [notification userInfo];
+    NSLog(@"handled data: %@", data);
 }
 @end

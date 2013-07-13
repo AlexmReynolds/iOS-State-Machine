@@ -6,8 +6,11 @@
 //  Copyright (c) 2013 Alex Reynolds. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "iElephant.h"
-
-@interface iStateViewController : iElephant
+#import "iState.h"
+@interface iStateViewController : iElephant{
+    iState *stateMachine;
+}
 
 @end

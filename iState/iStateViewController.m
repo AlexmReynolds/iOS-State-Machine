@@ -20,15 +20,30 @@
     if (self) {
         // Custom initialization
 
+
     }
     return self;
 }
-
 - (void)viewDidLoad
 {
-
+    [self setupStateMachine:@{
+     
+        @"states":@{
+            @"initializing":@{
+                @"allowedTransitions": @[],
+                @"allowedMethods"  : @[@"foo", @"bar"]
+            },
+            @"loaded":@{
+                @"allowedTransitions": @[],
+                @"allowedMethods"  : @[@"foo"]
+            }
+        }
+     
+     }];
+    
     [super viewDidLoad];
-    [self xyzsomeMEthod];
+    [self foo];
+    [self bar];
 	// Do any additional setup after loading the view.
 }
 
@@ -38,8 +53,11 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)xyzsomeMEthod
+-(void)foo
 {
-    NSLog(@"child");
+    NSLog(@"child foo");
+}
+-(void)bar{
+    NSLog(@"child bar");
 }
 @end

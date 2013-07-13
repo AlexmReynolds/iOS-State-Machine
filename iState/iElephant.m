@@ -27,7 +27,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setupStateMachine];
 	// Do any additional setup after loading the view.
 }
 
@@ -38,20 +37,19 @@
 }
 
 
--(void)setupStateMachine{
-    int i=0;
-    unsigned int mc = 0;
-    SEL stuff;
-    NSString *name;
-    Method * mlist = class_copyMethodList(object_getClass(self), &mc);
-    NSLog(@"%d methods", mc);
-    for(i=0;i<mc;i++){
-        name = [NSString stringWithFormat:@"%s",sel_getName(method_getName(mlist[i]))];
-        NSLog(@"%@", name);
-        if([name rangeOfString:@"xyz"].location != NSNotFound){
-            stuff = NSSelectorFromString(name);
-            [self addInterceptorMethod:stuff ToObject:self];
-            //NSLog(@"Method no #%d: %s", i, sel_getName(method_getName(mlist[i])));
+-(void)setupStateMachine:(NSDictionary *)options{
+    NSDictionary *states = [options objectForKey:@"states"];
+    NSLog(@"STATEs %@", states);
+    
+    for (NSDictionary *state in [states allKeys]){
+        NSLog(@"state %@", state);
+        if([[states objectForKey:state] objectForKey:@"allowedMethods"]){
+            NSArray *allowedMethods = [[[states objectForKey:state] objectForKey:@"allowedMethods"] copy];
+            NSLog(@"Object has key");
+            for (NSString *methodName in allowedMethods){
+                SEL sel = NSSelectorFromString(methodName);
+                [self addInterceptorMethod:sel ToObject:self];
+            }
         }
     }
 

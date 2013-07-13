@@ -11,4 +11,6 @@
 
 @interface iElephant : UIViewController
 
+
+-(void)setupStateMachine:(NSDictionary *)options;
 @end

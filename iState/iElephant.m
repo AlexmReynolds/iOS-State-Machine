@@ -13,7 +13,8 @@
 @end
 
 @implementation iElephant
-
+@synthesize currentState = _currentState;
+@synthesize previousState = _previousState;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -37,7 +38,7 @@
 }
 
 
--(void)setupStateMachine:(NSDictionary *)options{
+-(void)initStateMachinewithOptions:(NSDictionary *)options{
     NSDictionary *states = [options objectForKey:@"states"];
     NSLog(@"STATEs %@", states);
     NSMutableDictionary *methodsToIntercept = [[NSMutableDictionary alloc] init];
@@ -86,14 +87,15 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
 }
 -(NSString *)getState
 {
-    
+    return _currentState;
 }
 
--(BOOL)transitionToState:(NSString *)desiredState
-{
-    
+-(BOOL)transition:(NSString *)desiredState{
+    return YES;
 }
-
+-(BOOL)handle:(SEL)method withArguments:(NSArray *)args{
+    return YES;
+}
 - (id)forwardingTargetForSelector:(SEL)aSelector {
     NSLog(@"called");
 }

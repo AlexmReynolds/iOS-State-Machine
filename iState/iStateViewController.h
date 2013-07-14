@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "iElephant.h"
 #import "iState.h"
-@interface iStateViewController : iElephant{
+@interface iStateViewController : iElephant<iStateMachineDelegate>{
     iState *stateMachine;
 }
 

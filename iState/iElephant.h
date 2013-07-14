@@ -9,8 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-@interface iElephant : UIViewController
+@interface iElephant : UIViewController{
+
+}
+
+@property (nonatomic,strong,readonly) NSString *currentState;
+@property (nonatomic, strong,readonly) NSString *previousState;
 
 
--(void)setupStateMachine:(NSDictionary *)options;
+-(void)initStateMachinewithOptions:(NSDictionary *)options;
+-(BOOL)handle:(SEL)method withArguments:(NSArray *)args;
+-(BOOL)transition:(NSString *)desiredState;
 @end

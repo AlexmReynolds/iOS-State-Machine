@@ -101,6 +101,7 @@
 -(void)iStateTransitionFailed:(NSDictionary *)data
 {
     NSLog(@"FAILED %@", data);
+    [[[UIAlertView alloc] initWithTitle:@"Event" message:@"Transition Failed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
 }
 -(void)iStateTransitionCompleted:(NSDictionary *)data
 {
@@ -110,9 +111,12 @@
 -(void)iStateMethodHandled:(NSDictionary *)data
 {
     NSLog(@"Handled %@", data);
+    
 }
 -(void)iStateMethodNoHandler:(NSDictionary *)data
 {
     NSLog(@"NotHandled %@", data);
+    [[[UIAlertView alloc] initWithTitle:@"Event" message:@"No Handler" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    
 }
 @end

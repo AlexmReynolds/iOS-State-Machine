@@ -12,3 +12,12 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+
+#define iStateInitialState @"initialState"
+#define iStateAllowedMethods @"iStateAllowedMethods"
+#define iStateAllowedTransitions @"iStateAllowedTransitions"
+#define iStateEventHandled @"iStateEventHandled"
+#define iStateEventNoHandler @"iStateEventNoHandler"
+#define iStateEventTransitionComplete @"iStateEventTransitionComplete"
+#define iStateEventTransitionFailed @"iStateEventTransitionFailed"

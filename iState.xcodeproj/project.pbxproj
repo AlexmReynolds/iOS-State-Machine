@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E705985717920C7400DCBB2E /* iState.m in Sources */ = {isa = PBXBuildFile; fileRef = E705985617920C7400DCBB2E /* iState.m */; };
+		E74A55BF17937502004929F8 /* iStateElephantViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E74A55BE17937502004929F8 /* iStateElephantViewController.m */; };
 		E9B58FA21790B7E700D20074 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B58FA11790B7E700D20074 /* UIKit.framework */; };
 		E9B58FA41790B7E700D20074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B58FA31790B7E700D20074 /* Foundation.framework */; };
 		E9B58FA61790B7E700D20074 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B58FA51790B7E700D20074 /* CoreGraphics.framework */; };
@@ -41,6 +42,8 @@
 /* Begin PBXFileReference section */
 		E705985517920C7400DCBB2E /* iState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iState.h; sourceTree = "<group>"; };
 		E705985617920C7400DCBB2E /* iState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iState.m; sourceTree = "<group>"; };
+		E74A55BD17937502004929F8 /* iStateElephantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iStateElephantViewController.h; sourceTree = "<group>"; };
+		E74A55BE17937502004929F8 /* iStateElephantViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iStateElephantViewController.m; sourceTree = "<group>"; };
 		E9B58F9E1790B7E700D20074 /* iState.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iState.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9B58FA11790B7E700D20074 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E9B58FA31790B7E700D20074 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -129,12 +132,14 @@
 				E9B58FB11790B7E700D20074 /* iStateAppDelegate.m */,
 				E9B58FB91790B7E700D20074 /* MainStoryboard_iPhone.storyboard */,
 				E9B58FBC1790B7E700D20074 /* MainStoryboard_iPad.storyboard */,
-				E9B58FE21790B94600D20074 /* iElephant.h */,
-				E9B58FE31790B94600D20074 /* iElephant.m */,
 				E705985517920C7400DCBB2E /* iState.h */,
 				E705985617920C7400DCBB2E /* iState.m */,
 				E9B58FE51790B98A00D20074 /* iStateViewController.h */,
 				E9B58FE61790B98A00D20074 /* iStateViewController.m */,
+				E9B58FE21790B94600D20074 /* iElephant.h */,
+				E9B58FE31790B94600D20074 /* iElephant.m */,
+				E74A55BD17937502004929F8 /* iStateElephantViewController.h */,
+				E74A55BE17937502004929F8 /* iStateElephantViewController.m */,
 				E9B58FA81790B7E700D20074 /* Supporting Files */,
 			);
 			path = iState;
@@ -290,6 +295,7 @@
 				E9B58FE41790B94600D20074 /* iElephant.m in Sources */,
 				E9B58FE71790B98A00D20074 /* iStateViewController.m in Sources */,
 				E705985717920C7400DCBB2E /* iState.m in Sources */,
+				E74A55BF17937502004929F8 /* iStateElephantViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

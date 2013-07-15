@@ -8,14 +8,6 @@
 
 #import "iState.h"
 
-NSString* const iStateInitialState = @"initialState";
-NSString* const iStateAllowedMethods = @"allowedMethods";
-NSString* const iStateAllowedTransitions = @"allowedTransitions";
-NSString* const iStateEventHandled = @"iStateEventHandled";
-NSString* const iStateEventNoHandler = @"iStateEventNoHandler";
-NSString* const iStateEventTransitionComplete = @"iStateEventTransitionComplete";
-NSString* const iStateEventTransitionFailed = @"iStateEventTransitionFailed";
-
 @implementation iState
 @synthesize previousState = _previousState;
 @synthesize currentState = _currentState;
@@ -44,13 +36,19 @@ NSString* const iStateEventTransitionFailed = @"iStateEventTransitionFailed";
 {
 
     BOOL canHandle = NO;
+    Method m = class_getInstanceMethod([_delegate class], method);
+    char returnType[128];
+    method_getReturnType(m, returnType, sizeof(returnType));
+    
     NSArray *allowedMethods;
     NSString *desiredMethodString = NSStringFromSelector(method);
+    NSMutableDictionary *eventdata = [[NSMutableDictionary alloc] init];
     if([self stateHasDefinedAllowedMethods:_currentState]){
         
         allowedMethods = [[[_states objectForKey:_currentState] objectForKey:iStateAllowedMethods] copy];
         for(NSString *methodName in allowedMethods){
             if([methodName isEqualToString:desiredMethodString]){
+                [eventdata setObject:desiredMethodString forKey:@"method"];
                 NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_delegate methodSignatureForSelector:method]];
                 [invocation setTarget:_delegate];
                 [invocation setSelector:method];
@@ -62,7 +60,14 @@ NSString* const iStateEventTransitionFailed = @"iStateEventTransitionFailed";
                 }
 
                 [invocation invoke];
-                [self sendEvent:kStateEventHandled withData:@{@"method":desiredMethodString}];
+                
+                // If we have a non-void method then we get the return value and pass along
+                if (strncmp(returnType, "v", 1) != 0){
+                    id returnValue;
+                    [invocation getReturnValue:&returnValue];
+                    [eventdata setObject:returnValue forKey:@"returnValue"];
+                }
+                [self sendEvent:kStateEventHandled withData:eventdata];
                 canHandle = YES;
                 break;
                 

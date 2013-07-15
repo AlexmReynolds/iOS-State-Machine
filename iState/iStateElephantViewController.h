@@ -1,16 +1,14 @@
 //
-//  iStateViewController.h
+//  iStateElephantViewController.h
 //  iState
 //
-//  Created by Alex Reynolds on 7/12/13.
+//  Created by Alex Reynolds on 7/14/13.
 //  Copyright (c) 2013 Alex Reynolds. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "iState.h"
-@interface iStateViewController : UIViewController<iStateMachineDelegate>{
-    iState *stateMachine;
-}
+#import "iElephant.h"
+@interface iStateElephantViewController : iElephant
 
 @property (weak, nonatomic) IBOutlet UILabel *currentStateLabel;
 - (IBAction)redButtonClicked:(id)sender;

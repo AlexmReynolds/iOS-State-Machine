@@ -27,33 +27,11 @@
 {
     [super viewDidLoad];
     [self setupStateObject];
+    [stateMachine transition:@"loaded"];
 	// Do any additional setup after loading the view.
 }
 
--(void) setupSuperState
-{
-    [self initStateMachinewithOptions:@{
-         @"initialState": @"initializing",
-         @"states":@{
-             @"initializing":@{
-               iStateAllowedTransitions: @[@"loaded"],
-                 iStateAllowedMethods  : @[@"foo:", @"bar", @"foo:bar:"]
-             },
-             @"loaded":@{
-               iStateAllowedTransitions: @[],
-                 iStateAllowedMethods  : @[@"foo:"]
-             }
-         },
-     
-     }] ;
-    
-    
-    [super viewDidLoad];
-    
-    [self foo:@"tim"];
-    [self foo:@"test" bar:@[@1,@2]];
-    [self bar];
-}
+
 
 // Init the state machine and pass in a dictionary of states, allowed methods, and transitions
 // Set eventNotificationType so you can listen to notication center if you want multiple objects listening, or delegate if you want only one object listening.
@@ -64,44 +42,27 @@
             @"states":@{
                 @"initializing":@{
                     iStateAllowedTransitions: @[@"loaded"],
-                    iStateAllowedMethods  : @[@"foo:", @"bar", @"foo:bar:"]
+                    iStateAllowedMethods  : @[]
                 },
                 @"loaded":@{
-                    iStateAllowedTransitions: @[],
-                    iStateAllowedMethods  : @[@"foo:"]
+                    iStateAllowedTransitions: @[@"red",@"blue"],
+                    iStateAllowedMethods  : @[]
+                },
+                @"blue":@{
+                                iStateAllowedTransitions: @[@"red",@"green"],
+                                  iStateAllowedMethods  : @[@"goBlue"]
+                },
+                @"red":@{
+                                iStateAllowedTransitions: @[@"blue"],
+                                  iStateAllowedMethods  : @[@"goRed"]
+                },
+                @"green":@{
+                                iStateAllowedTransitions: @[@"blue"],
+                                  iStateAllowedMethods  : @[@"goGreen"]
                 }
             },
     
             } eventNotificationType:iStateEventNotificationsUseDelegate] ;
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(methodHandled:) name:iStateEventHandled object:nil];
-    
-    
-    if([stateMachine handle:@selector(foo:) withArguments:@[@"tom"]]){
-        NSLog(@"Can handle");
-    }
-    if([stateMachine handle:@selector(foo:bar:) withArguments:@[@"tom",@[@1,@2,@3]]]){
-        NSLog(@"can handle");
-    }
-    
-    NSLog(@"current state %@", stateMachine.currentState);
-    /// Try to change states
-    if([stateMachine transition:@"loaded"]){
-        NSLog(@"we can transition");
-        NSLog(@"current state %@", stateMachine.currentState);
-        NSLog(@"previous state %@", stateMachine.previousState);
-    }
-    
-    // Now in new state try methods
-    if([stateMachine handle:@selector(foo:) withArguments:@[@"tom"]]){
-        NSLog(@"Can handle");
-    }
-    if([stateMachine handle:@selector(foo:bar:) withArguments:@[@"tom",@[@1,@2,@3]]]){
-        NSLog(@"can handle");
-    }
-    
-    // Try to transition to non-existent state
-    [stateMachine transition:@"doesntexist"];
     
 }
 
@@ -111,17 +72,32 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)foo:(NSString *)name
+-(void)goRed
 {
-    NSLog(@"child foo %@",name);
+    self.view.backgroundColor = [UIColor redColor];
 }
--(void)bar{
-    NSLog(@"child bar");
+-(NSString* )goBlue{
+    self.view.backgroundColor = [UIColor blueColor];
+    return @"STUFFF";
 }
--(void)foo:(NSString *)name bar:(NSArray *)last
-{
-    NSLog(@"child foo:bar: %@ %@", name, last);
+-(void)goGreen{
+    self.view.backgroundColor = [UIColor greenColor];
 }
+- (IBAction)redButtonClicked:(id)sender {
+    [stateMachine transition:@"red"];
+    [stateMachine handle:@selector(goRed) withArguments:nil];
+}
+
+- (IBAction)blueButtonClicked:(id)sender {
+    [stateMachine transition:@"blue"];
+    [stateMachine handle:@selector(goBlue) withArguments:nil];
+}
+
+- (IBAction)greenButtonClicked:(id)sender {
+    [stateMachine transition:@"green"];
+    [stateMachine handle:@selector(goGreen) withArguments:nil];
+}
+
 
 
 #pragma mark - notification events
@@ -146,10 +122,12 @@
 }
 -(void)iStateTransitionCompleted:(NSDictionary *)data
 {
+    self.currentStateLabel.text = stateMachine.currentState;
     NSLog(@"delegate transition complete data: %@", data);
 }
 -(void)iStateTransitionFailed:(NSDictionary *)data
 {
     NSLog(@"delegate transition failed data: %@", data);
 }
+
 @end

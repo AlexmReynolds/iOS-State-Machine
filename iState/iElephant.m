@@ -120,6 +120,30 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
 {
     return _currentState;
 }
+
+-(void)callOnEnterBlock:(NSString *)state
+{
+    if (![_states objectForKey:state]){
+        return;
+    }
+    if([[_states objectForKey:state] objectForKey:iStateOnEnter]){
+        NSLog(@"have a value for on enter");
+        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
+        afunc();
+    }
+}
+-(void)callOnExitBlock:(NSString *)state
+{
+    if (![_states objectForKey:state]){
+        return;
+    }
+    if([[_states objectForKey:state] objectForKey:iStateOnExit]){
+        NSLog(@"have a value for on exit");
+        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
+        afunc();
+    }
+}
+
 -(BOOL)methodCallAllowed:(NSString *)method
 {
     BOOL canHandle = NO;
@@ -152,8 +176,10 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         for(NSString *allowedStates in allowedTransitions){
             if([allowedStates isEqualToString:desiredState]){
                 canTransition = YES;
+                [self callOnExitBlock:_currentState];
                 _previousState = _currentState;
                 _currentState = desiredState;
+                [self callOnEnterBlock:_currentState];
                 [self sendEvent:kStateEventTransitioned withData:@{@"currentState":_currentState, @"previousState":_previousState}];
                 break;
             }

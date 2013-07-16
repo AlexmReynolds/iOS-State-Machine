@@ -21,3 +21,5 @@
 #define iStateEventNoHandler @"iStateEventNoHandler"
 #define iStateEventTransitionComplete @"iStateEventTransitionComplete"
 #define iStateEventTransitionFailed @"iStateEventTransitionFailed"
+#define iStateOnEnter @"iStateOnEnter"
+#define iStateOnExit @"iStateOnExit"

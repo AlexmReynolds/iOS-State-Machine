@@ -22,7 +22,10 @@
         
         NSDictionary *states = [options objectForKey:@"states"];
         NSLog(@"STATEs %@", states);
-        _states = states;
+        if(states){
+            _states = states;
+        }
+
         if ([options objectForKey:@"initialState"]){
             _currentState = [options objectForKey:@"initialState"];
         }
@@ -90,8 +93,10 @@
         for(NSString *allowedStates in allowedTransitions){
             if([allowedStates isEqualToString:desiredState]){
                 canTransition = YES;
+                [self callOnExitBlock:_currentState];
                 _previousState = _currentState;
                 _currentState = desiredState;
+                [self callOnEnterBlock:_currentState];
                 [self sendEvent:kStateEventTransitioned withData:@{@"currentState":_currentState, @"previousState":_previousState}];
                 break;
             }
@@ -107,7 +112,28 @@
 {
     return _currentState;
 }
-
+-(void)callOnEnterBlock:(NSString *)state
+{
+    if (![_states objectForKey:state]){
+        return;
+    }
+    if([[_states objectForKey:state] objectForKey:iStateOnEnter]){
+        NSLog(@"have a value for on enter");
+        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
+        afunc();
+    }
+}
+-(void)callOnExitBlock:(NSString *)state
+{
+    if (![_states objectForKey:state]){
+        return;
+    }
+    if([[_states objectForKey:state] objectForKey:iStateOnExit]){
+        NSLog(@"have a value for on exit");
+        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
+        afunc();
+    }
+}
 -(BOOL) stateHasDefinedAllowedMethods:(NSString *)state
 {
     if (_states && [[_states objectForKey:state] objectForKey:iStateAllowedMethods]){

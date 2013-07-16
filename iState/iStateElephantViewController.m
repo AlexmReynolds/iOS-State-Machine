@@ -50,6 +50,7 @@
                    iStateAllowedMethods  : @[]
          },
          @"loaded":@{
+                iStateOnEnter : ^{NSLog(@"on enter loaded");},
                  iStateAllowedTransitions: @[@"blue",@"red"],
                    iStateAllowedMethods  : @[@"goBlue", @"goRed"]
          },

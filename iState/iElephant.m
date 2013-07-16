@@ -44,18 +44,18 @@
         return false;
     }
     if([options objectForKey:iStateInitialState]){
-        NSLog(@"HEREEEEE %@",[options objectForKey:iStateInitialState]);
+        ElephantLog(@"HEREEEEE %@",[options objectForKey:iStateInitialState]);
         _currentState = [options objectForKey:iStateInitialState];
-        NSLog(@"current state %@", _currentState);
+        ElephantLog(@"current state %@", _currentState);
     }
-    NSLog(@"STATEs %@", _states);
+    ElephantLog(@"STATEs %@", _states);
     NSMutableDictionary *methodsToIntercept = [[NSMutableDictionary alloc] init];
     if(_states)
     for (NSDictionary *state in [_states allKeys]){
-        NSLog(@"state %@", state);
+        ElephantLog(@"state %@", state);
         if([[_states objectForKey:state] objectForKey:iStateAllowedMethods]){
             NSArray *allowedMethods = [[[_states objectForKey:state] objectForKey:iStateAllowedMethods] copy];
-            NSLog(@"Object has key");
+            ElephantLog(@"Object has key");
             for (NSString *methodName in allowedMethods){
                 [methodsToIntercept setObject:methodName forKey:methodName];
             }
@@ -68,7 +68,7 @@
 }
 void dynamicMethodIMP(id self, SEL _cmd, ...) {
     
-    NSLog(@"HERE %@", NSStringFromSelector(_cmd));
+    ElephantLog(@"HERE %@", NSStringFromSelector(_cmd));
     NSString *methodName = NSStringFromSelector(_cmd);
     NSString *oldName = [NSString stringWithFormat:@"%@%@",@"abc",methodName];
     SEL callOld = NSSelectorFromString(oldName);
@@ -76,21 +76,21 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     Method m = class_getInstanceMethod([self class], callOld);
     char returnType[128];
     method_getReturnType(m, returnType, sizeof(returnType));
-    NSLog( @"Return type: %s", returnType );
+    ElephantLog( @"Return type: %s", returnType );
     
 
     if ([self methodCallAllowed:methodName]){
-        NSLog(@"HERE1");
+        ElephantLog(@"HERE1");
         va_list ap;
         va_start(ap, _cmd);
         NSMethodSignature *signature = [self methodSignatureForSelector:callOld];
-                NSLog(@"HERE2");
+                ElephantLog(@"HERE2");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:callOld]];
         int argc = [signature numberOfArguments];
         char *ptr = (char *)ap;
-                NSLog(@"HERE3");
+                ElephantLog(@"HERE3");
         for (int i = 2; i < argc; i++) {
-                    NSLog(@"HERE4");
+                    ElephantLog(@"HERE4");
             const char *type = [signature getArgumentTypeAtIndex:i];
             [invocation setArgument:ptr atIndex:i];
             NSUInteger size;
@@ -102,16 +102,16 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         
         
         
-        NSLog(@"here5");
+        ElephantLog(@"here5");
         [invocation setTarget:self];
         [invocation setSelector:callOld];
         [invocation invoke];
         // If we have a non-void method then we get the return value and pass along
         if (strncmp(returnType, "v", 1) != 0){
-            NSLog(@"here");
+            ElephantLog(@"here");
             id returnValue;
             [invocation getReturnValue:&returnValue];
-            NSLog(@"return val %@", returnValue);
+            ElephantLog(@"return val %@", returnValue);
         }
     }
 
@@ -144,7 +144,7 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     return canHandle;
 }
 -(BOOL)transition:(NSString *)desiredState{
-    NSLog(@"current states %@ %@", _currentState, _previousState);
+    ElephantLog(@"current states %@ %@", _currentState, _previousState);
     NSArray *allowedTransitions;
     BOOL canTransition = NO;
     if ([self stateHasDefinedAllowedTransitions:_currentState]){
@@ -167,7 +167,7 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
 
 -(void)sendEvent:(iStateEvent)event withData:(NSDictionary *)data
 {
-    NSLog(@"event data: %@",data);
+    ElephantLog(@"event data: %@",data);
     switch (event){
         case kStateEventHandled:
             if ([self respondsToSelector:@selector(iStateMethodHandled:)]){
@@ -197,7 +197,7 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     return YES;
 }
 - (id)forwardingTargetForSelector:(SEL)aSelector {
-    NSLog(@"called");
+    ElephantLog(@"called");
 }
 
 
@@ -223,7 +223,7 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
 // Add interceptors makes copies of state methods and replaces the existing selector with the state machine checker
 // The original method is stored using methodname plus a prefix.
 - (void)addInterceptorsForMethods:(NSDictionary *)methodNames ToObject:(id)object  {
-    NSLog(@"methods to intercept %@", methodNames);
+    ElephantLog(@"methods to intercept %@", methodNames);
     NSDictionary *methodStrings = [methodNames copy];
     Class objectClass = object_getClass(object);
     NSString *newClassName = [NSString stringWithFormat:@"Custom_%@", NSStringFromClass(objectClass)];
@@ -233,30 +233,45 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         for (NSString *methodName in [methodStrings allKeys]){
             SEL selectorToOverride = NSSelectorFromString(methodName);
             NSString *oldName = [NSString stringWithFormat:@"%@%@",@"abc",NSStringFromSelector(selectorToOverride)];
-            NSLog(@"new name %@", oldName);
-            if ([self respondsToSelector:selectorToOverride]){
-                NSLog(@"method exists");
+            ElephantLog(@"new name %@", oldName);
+            if (![self respondsToSelector:selectorToOverride]){
+                ElephantLog(@"Invalid method: %@ passed to state machine", methodName);
+                ElephantLog(@"There is no valid method for that methdodName");
+                continue;
             }
             // if the class responds to the stored selector name then we already copied it so return
             if ([c respondsToSelector:NSSelectorFromString(oldName)]){
-                NSLog(@"continue");
+                ElephantLog(@"continue");
                 continue;
             }
             
             
             SEL copySel = sel_registerName([oldName UTF8String]);
-            NSLog(@"new class name %@", newClassName);
+            ElephantLog(@"new class name %@", newClassName);
             // this class doesn't exist; create it
             // allocate a new class
 
             // get the info on the method we're going to override
             Method m = class_getInstanceMethod(objectClass, selectorToOverride);
             // Store old method
-            NSLog(@"%s",method_getTypeEncoding(m));
+            
+            // Our interceptor method doesn't return anything
+            // First get the types from the method, this includes args and return
+            const char * consttype = method_getTypeEncoding(m);
+            char type[80];
+            
+            // Convert the types to char so we can manipulate it
+            strcpy(type, consttype);
+            
+            ElephantLog(@"%s",type);
+            
+            // Change it so our interceptor always is void typed
+            type[0] = 'v';
+            ElephantLog(@"%s",type);
             class_addMethod(c, copySel, method_getImplementation(m), method_getTypeEncoding(m));
             
             // add the method to the new class
-            class_addMethod(c, selectorToOverride, (IMP)dynamicMethodIMP, method_getTypeEncoding(m));
+            class_addMethod(c, selectorToOverride, (IMP)dynamicMethodIMP, type);
         }
 
         
@@ -268,4 +283,16 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     object_setClass(object, c);
 }
 
+// Elephant log is so you can quickly disable state logs in your app
+void ElephantLog(NSString *format, ...){
+#ifdef DEBUG
+    va_list args;
+    va_start(args, format);
+    NSLogv(format, args);
+    va_end(args);
+#endif
+}
+
 @end
+
+

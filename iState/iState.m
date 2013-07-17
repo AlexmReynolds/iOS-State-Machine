@@ -112,6 +112,10 @@
 {
     return _currentState;
 }
+-(void)setSendEventsUsingNotificationType:(iStateEventNoticiationType)type
+{
+    _sendEventsUsingNotificationType = type;
+}
 -(void)callOnEnterBlock:(NSString *)state
 {
     if (![_states objectForKey:state]){

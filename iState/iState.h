@@ -46,6 +46,7 @@ typedef enum iStateEventNoticiationType : NSUInteger {
 @property (nonatomic, strong,readonly) NSString *previousState;
 
 -(id)initStateMachineForObject:(id)object withOptions:(NSDictionary *)options eventNotificationType:(iStateEventNoticiationType)eventNotificationType;
+-(void)setSendEventsUsingNotificationType:(iStateEventNoticiationType)type;
 -(BOOL)handle:(SEL)method withArguments:(NSArray *)args;
 -(BOOL)transition:(NSString *)desiredState;
 @end

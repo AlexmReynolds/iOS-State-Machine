@@ -12,7 +12,8 @@
 
 - (void)setUp
 {
-    _blockcalled = NO;
+    _blockOnExitCalled = NO;
+    _blockOnEnterCalled = NO;
     _delegateTrainsitionCalled= NO;
     _delegateTrainsitionFailedCalled = NO;
     _delegateHandledCalled = NO;
@@ -23,13 +24,13 @@
                                                 iStateInitialState: @"initializing",
                           @"states":@{
                           @"initializing":@{
-                                                    iStateOnEnter : ^{ [self blockTest];},
-                                                     iStateOnExit : ^{ [self blockTest];},
+                                                    iStateOnEnter : ^{ [self onEnterBlock];},
+                                                     iStateOnExit : ^{ [self onExitBlock];},
                                           iStateAllowedTransitions: @[@"loaded"],
                                             iStateAllowedMethods  : @[]
                           },
                           @"loaded":@{
-                                                   iStateOnEnter : ^{ [self blockTest];},
+                                                   iStateOnEnter : ^{ [self onEnterBlock];},
                                           iStateAllowedTransitions: @[@"red",@"blue"],
                                             iStateAllowedMethods  : @[]
                           },
@@ -53,7 +54,8 @@
 
 - (void)tearDown
 {
-    _blockcalled = NO;
+    _blockOnExitCalled = NO;
+    _blockOnEnterCalled = NO;
     _delegateTrainsitionCalled= NO;
     _delegateTrainsitionFailedCalled = NO;
     _delegateHandledCalled = NO;
@@ -63,9 +65,12 @@
     
     [super tearDown];
 }
--(void)blockTest{
-    _blockcalled = YES;
+-(void)onEnterBlock{
+    _blockOnEnterCalled = YES;
     
+}
+-(void)onExitBlock{
+    _blockOnExitCalled = YES;
 }
 
 - (void)testInitialState
@@ -125,11 +130,29 @@
     STAssertTrue(_delegateHandledCalled, @"Method handled for method goBlue");
 }
 
+-(void)testDelegateDisabledWhenUsingNotification
+{
+    [self.stateMachine setSendEventsUsingNotificationType:iStateEventNotificationsUseNotificationCenter];
+    NSString *desiredState = @"loaded";
+    [self.stateMachine transition:desiredState];
+    desiredState = @"blue";
+    [self.stateMachine transition:desiredState];
+    NSLog(@"currents State %@",self.stateMachine.currentState);
+    [self.stateMachine handle:NSSelectorFromString(@"goBlue") withArguments:nil];
+    STAssertFalse(_delegateHandledCalled, @"Method handled for method goBlue");
+}
+
 -(void)testOnEnterBlockCalled
 {
     NSString *desiredState = @"loaded";
     [self.stateMachine transition:desiredState];
-    STAssertTrue(_blockcalled, @"On Enter Block was called");
+    STAssertTrue(_blockOnEnterCalled, @"On Enter Block was called");
+}
+-(void)testOnExitBlockCalled
+{
+    NSString *desiredState = @"loaded";
+    [self.stateMachine transition:desiredState];
+    STAssertTrue(_blockOnExitCalled, @"On exit Block was called");
 }
 
 

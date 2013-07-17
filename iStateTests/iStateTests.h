@@ -10,7 +10,8 @@
 #import "iState.h"
 @interface iStateTests : SenTestCase{
     NSDictionary *_states;
-    BOOL _blockcalled;
+    BOOL _blockOnEnterCalled;
+    BOOL _blockOnExitCalled;
     BOOL _delegateTrainsitionCalled;
     BOOL _delegateTrainsitionFailedCalled;
     BOOL _delegateHandledCalled;

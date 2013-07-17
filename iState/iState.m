@@ -50,7 +50,7 @@
         
         allowedMethods = [[[_states objectForKey:_currentState] objectForKey:iStateAllowedMethods] copy];
         for(NSString *methodName in allowedMethods){
-            if([methodName isEqualToString:desiredMethodString]){
+            if([methodName isEqualToString:desiredMethodString] && [_delegate respondsToSelector:method]){
                 [eventdata setObject:desiredMethodString forKey:@"method"];
                 NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_delegate methodSignatureForSelector:method]];
                 [invocation setTarget:_delegate];

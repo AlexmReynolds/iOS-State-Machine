@@ -7,7 +7,17 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-
-@interface iStateTests : SenTestCase
+#import "iState.h"
+@interface iStateTests : SenTestCase{
+    NSDictionary *_states;
+    BOOL _blockcalled;
+    BOOL _delegateTrainsitionCalled;
+    BOOL _delegateTrainsitionFailedCalled;
+    BOOL _delegateHandledCalled;
+    BOOL _delegateNoHandlerCalled;
+    BOOL _methodWasCalled;
+    
+}
+@property (nonatomic, strong) iState *stateMachine;
 
 @end

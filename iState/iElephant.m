@@ -127,9 +127,16 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         return;
     }
     if([[_states objectForKey:state] objectForKey:iStateOnEnter]){
-        NSLog(@"have a value for on enter");
-        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
-        afunc();
+        
+        if([[[_states objectForKey:state] objectForKey:iStateOnEnter] isKindOfClass:NSClassFromString(@"NSBlock")]){
+            ElephantLog(@"have a value for on enter");
+            
+            void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
+            afunc();
+        } else {
+            ElephantLog(@"Not a block so onEnter Cant be called");
+            
+        }
     }
 }
 -(void)callOnExitBlock:(NSString *)state
@@ -138,10 +145,16 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         return;
     }
     if([[_states objectForKey:state] objectForKey:iStateOnExit]){
-        NSLog(@"have a value for on exit");
-        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
-        afunc();
+        if([[[_states objectForKey:state] objectForKey:iStateOnExit] isKindOfClass:NSClassFromString(@"NSBlock")]){
+            ElephantLog(@"have a value for on exit");
+            void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
+            afunc();
+        } else {
+            ElephantLog(@"Not a block so onExit Cant be called");
+            
+        }
     }
+    
 }
 
 -(BOOL)methodCallAllowed:(NSString *)method

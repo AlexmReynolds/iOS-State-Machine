@@ -47,7 +47,9 @@
     
     // Declare a block used for an onEnter or onExit method
     void (^aBlock)(void)= ^{[stateSelf testit];};
-    void (^bBlock)(void)= ^{NSLog(@"onExit");};
+    void (^bBlock)(void)= ^{
+        NSLog(@"onExit");
+    };
     
     // Options is an NSDictionary
     // States is an array of state objects

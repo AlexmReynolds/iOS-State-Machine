@@ -21,7 +21,7 @@
         }
         
         NSDictionary *states = [options objectForKey:@"states"];
-        NSLog(@"STATEs %@", states);
+        iStateLog(@"STATEs %@", states);
         if(states){
             _states = states;
         }
@@ -122,9 +122,16 @@
         return;
     }
     if([[_states objectForKey:state] objectForKey:iStateOnEnter]){
-        NSLog(@"have a value for on enter");
-        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
-        afunc();
+        
+        if([[[_states objectForKey:state] objectForKey:iStateOnEnter] isKindOfClass:NSClassFromString(@"NSBlock")]){
+            iStateLog(@"have a value for on enter");
+            
+            void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnEnter];
+            afunc();
+        } else {
+            iStateLog(@"Not a block so onEnter Cant be called");
+            
+        }
     }
 }
 -(void)callOnExitBlock:(NSString *)state
@@ -133,10 +140,16 @@
         return;
     }
     if([[_states objectForKey:state] objectForKey:iStateOnExit]){
-        NSLog(@"have a value for on exit");
-        void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
-        afunc();
+        if([[[_states objectForKey:state] objectForKey:iStateOnExit] isKindOfClass:NSClassFromString(@"NSBlock")]){
+            iStateLog(@"have a value for on exit");
+            void (^afunc)(void) = [[_states objectForKey:state] objectForKey:iStateOnExit];
+            afunc();
+        } else {
+            iStateLog(@"Not a block so onExit Cant be called");
+            
+        }
     }
+
 }
 -(BOOL) stateHasDefinedAllowedMethods:(NSString *)state
 {
@@ -210,5 +223,14 @@
     }
     
      [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:nil userInfo:data];
+}
+// Elephant log is so you can quickly disable state logs in your app
+void iStateLog(NSString *format, ...){
+#ifdef DEBUG
+    va_list args;
+    va_start(args, format);
+    NSLogv(format, args);
+    va_end(args);
+#endif
 }
 @end

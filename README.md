@@ -59,5 +59,36 @@ iElephant is a superclass that tracks the state of a subclass.
             } eventNotificationType:iStateEventNotificationsUseDelegate] ;
 ```
 
+## Initializing the machine
+Initializing the state machine is easy. To init the machine pass in a reference to the object that it is to track. Pass in a NSDictionary of options.
+##Options
+iStateInitialState is the state you want the machine to start up in.
+states is a NSArray of state objects.
+State is a NSDictionary that contains what states it can trasition to, what methods are allowed, and blocks to execute on entering or exiting the state
+
+## event notifications for state change, method calls, or failures can be sent via delegate methods or broadcast via notification center.
+
+##Using the Machine
+
+Using is very easy. Store the machine in an instance variable then call
+```[self.stateMachine transition:@"loaded"];```
+This will try to transition. If the state is allowed and exists it will change states, fire the onExit and onEnter blocks, and fire the notifcations.
+```[self.stateMachine handle:@"goRed" withArguments:nil];```
+Will try to call a method. IF the method is allowed it will call it with the argument array passed in and fire the notifications.
+
+Check out the xCode project. Launch the app to test the iState machine in a basic UI.
+
+
+
 ##iElephant Examples
+iElephant is somewhat different. It uses the same basic setup and same basic methods. The biggest difference is that instead of calling ```[stateMachine handle....]``` you call the method as you normall would ```[self foobar]```
+
+iElephant under the hood intercepts the method calls listed in the setup and when those are called it checks to see if they are allow, calls the methods and fires the notifications via methods in the subclass.
+
+Initing the iElephant is simple. Just call ```[self initStateMachinewithOptions:]```
+Using is very easy.
+```[self transition:@"loaded"];```
+This will try to transition. If the state is allowed and exists it will change states, fire the onExit and onEnter blocks, and fire the notifcations.
+```[self goRed];```
+
 iState

@@ -66,7 +66,8 @@ iStateInitialState is the state you want the machine to start up in.
 states is a NSArray of state objects.
 State is a NSDictionary that contains what states it can trasition to, what methods are allowed, and blocks to execute on entering or exiting the state
 
-## event notifications for state change, method calls, or failures can be sent via delegate methods or broadcast via notification center.
+##Event notifications
+Notifications for state change, method calls, or failures can be sent via delegate methods or broadcast via notification center.
 
 ##Using the Machine
 

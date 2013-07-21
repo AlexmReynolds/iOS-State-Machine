@@ -4,9 +4,9 @@ iState is a NSObject state machine that a class can init to track the class' sta
 
 iElephant is a superclass that tracks the state of a subclass.
 
-*iState Examples*
+##iState Examples
 
-<pre>
+```objectivec
     // Create a reference to self if we are going to call self from the blocks
     // Arc uses __weak to break retain cycles
     #if __has_feature(objc_arc)
@@ -55,6 +55,6 @@ iElephant is a superclass that tracks the state of a subclass.
             },
     
             } eventNotificationType:iStateEventNotificationsUseDelegate] ;
-</pre>
+```
 
-*iElephant Examples*
+##iElephant Examples

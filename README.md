@@ -38,7 +38,10 @@ iElephant is a superclass that tracks the state of a subclass.
                     iStateAllowedMethods  : @[]
                 },
                 @"loaded":@{
-                    iStateOnEnter : ^{NSLog(@"on enter loaded");},
+                    iStateOnEnter : ^{
+                        NSLog(@"on enter loaded")
+                        [stateMachine trigger:@"customEventFoo" withData:@{@"foo": @"bar"};
+                    },
                     iStateAllowedTransitions: @[@"red",@"blue"],
                     iStateAllowedMethods  : @[]
                 },
@@ -68,6 +71,12 @@ State is a NSDictionary that contains what states it can trasition to, what meth
 
 ##Event notifications
 Notifications for state change, method calls, or failures can be sent via delegate methods or broadcast via notification center.
+##Custom events 
+Custom events can be triggered in a block by calling ```[stateMachine trigger:@"theEventName" withData:nil]```
+If you are using delegates then this will try to fire a delegate method ```-(void)theEventName:(NSDictionary*)data```
+If your class respondes to the event name you provided on the trigger, then it will call that method and pass in the data.
+If you are using notification center then listen to notifications prefixed with ```iState```. So for custom event ```fooBarEvent``` you would listen to ```iStatefooBarEvent```. 
+
 
 ##Using the Machine
 

@@ -139,6 +139,9 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         }
     }
 }
+
+// callOnExitBlock:(NSString *state is called when exiting a state during a transition
+// First it checks that the state has an exit block and if so calls it.
 -(void)callOnExitBlock:(NSString *)state
 {
     if (![_states objectForKey:state]){
@@ -157,6 +160,9 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     
 }
 
+// methodCallAllowed:(NSString *)method check the state for list of allowed methods.
+// If method is allowed then it checks for a valid method to call. If found and method exists then send event.
+// Return BOOL YES if method is allowed
 -(BOOL)methodCallAllowed:(NSString *)method
 {
     BOOL canHandle = NO;
@@ -166,8 +172,10 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
         allowedMethods = [[[_states objectForKey:_currentState] objectForKey:iStateAllowedMethods] copy];
         for(NSString *methodName in allowedMethods){
             if([methodName isEqualToString:method]){
-                [self sendEvent:kStateEventHandled withData:@{@"method":method}];
-                canHandle = YES;
+                if([self respondsToSelector:NSSelectorFromString(method)]){
+                    [self sendEvent:kStateEventHandled withData:@{@"method":method}];
+                    canHandle = YES;
+                }
                 break;
                 
             }
@@ -180,6 +188,10 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     
     return canHandle;
 }
+
+// transition:(NSString *)desiredState checks to see if current state has defined allowedTransitions
+// if desired state is in allowedtransitions then transtition and fire events on exit and on enter
+// Return BOOL of transition handled.
 -(BOOL)transition:(NSString *)desiredState{
     ElephantLog(@"current states %@ %@", _currentState, _previousState);
     NSArray *allowedTransitions;
@@ -204,6 +216,9 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     return canTransition;
 }
 
+
+// sendEvent:(iStateEvent)event withData:(NSDictionary *)data checks if the subclass has implemented the event method
+// Send call the event method with the event data.
 -(void)sendEvent:(iStateEvent)event withData:(NSDictionary *)data
 {
     ElephantLog(@"event data: %@",data);
@@ -239,7 +254,8 @@ void dynamicMethodIMP(id self, SEL _cmd, ...) {
     ElephantLog(@"called");
 }
 
-
+// stateHasDefinedAllowedMethods:(NSString *)state checks if state has key allowedMethods
+// @Return BOOL of state has declared allowedMethods
 -(BOOL) stateHasDefinedAllowedMethods:(NSString *)state
 {
     if (_states && [[_states objectForKey:state] objectForKey:iStateAllowedMethods]){

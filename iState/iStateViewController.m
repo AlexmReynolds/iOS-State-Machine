@@ -66,7 +66,10 @@
                     iStateAllowedMethods  : @[]
                 },
                 @"loaded":@{
-                    iStateOnEnter : ^{NSLog(@"on enter loaded");},
+                    iStateOnEnter : ^{
+                                        NSLog(@"on enter loaded");
+                                        [stateMachine trigger:@"customEvent" withData:@{@"test":@213}];
+                                    },
                     iStateAllowedTransitions: @[@"red",@"blue"],
                     iStateAllowedMethods  : @[]
                 },
@@ -134,7 +137,10 @@
 
 
 #pragma mark - delegate events
-
+-(void)customEvent:(NSDictionary *)data
+{
+    NSLog(@"DATA %@", data);
+}
 -(void)iStateMethodHandled:(NSDictionary *)data
 {
     NSLog(@"delegate handled data: %@", data);

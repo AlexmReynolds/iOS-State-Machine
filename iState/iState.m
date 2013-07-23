@@ -167,6 +167,31 @@
         return NO;
     }
 }
+
+
+-(void)trigger:(NSString *)customEventName withData:(NSDictionary *)data
+{
+    NSString *selectorName = customEventName;
+    if (data){
+        selectorName = [NSString stringWithFormat:@"%@:", customEventName];
+    }
+    switch(_sendEventsUsingNotificationType){
+        case iStateEventNotificationsUseDelegate:
+            if ([_delegate respondsToSelector:NSSelectorFromString(selectorName)]){
+                
+                NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_delegate methodSignatureForSelector:NSSelectorFromString(selectorName)]];
+                [invocation setTarget:_delegate];
+                [invocation setSelector:NSSelectorFromString(selectorName)];
+                [invocation setArgument:&data atIndex:2];
+                [invocation invoke];
+            }
+            break;
+        case iStateEventNotificationsUseNotificationCenter:
+                [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@%@", @"iState", customEventName] object:nil userInfo:data];
+            break;
+            
+    }
+}
 -(void)sendEvent:(iStateEvent)event withData:(NSDictionary *)data
 {
     switch(_sendEventsUsingNotificationType){

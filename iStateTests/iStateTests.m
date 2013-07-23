@@ -65,18 +65,17 @@
     
     [super tearDown];
 }
--(void)onEnterBlock{
-    _blockOnEnterCalled = YES;
-    
-}
--(void)onExitBlock{
-    _blockOnExitCalled = YES;
-}
+
 
 - (void)testInitialState
 {
     NSString *testState = @"initializing";
     STAssertEquals(self.stateMachine.currentState, testState, @"Initial state should be %@",testState);
+}
+
+-(void)testGetState
+{
+    STAssertEquals(self.stateMachine.currentState, [self.stateMachine getState], @"Get state returns current state");
 }
 -(void)testTransitionStateChange
 {
@@ -162,6 +161,13 @@
 -(void)goBlue
 {
     _methodWasCalled = YES;
+}
+-(void)onEnterBlock{
+    _blockOnEnterCalled = YES;
+    
+}
+-(void)onExitBlock{
+    _blockOnExitCalled = YES;
 }
 
 

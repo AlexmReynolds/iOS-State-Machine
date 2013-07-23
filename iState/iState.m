@@ -178,7 +178,7 @@
     switch(_sendEventsUsingNotificationType){
         case iStateEventNotificationsUseDelegate:
             if ([_delegate respondsToSelector:NSSelectorFromString(selectorName)]){
-                
+                iStateLog(@"Trigger custom event %@", customEventName);
                 NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[_delegate methodSignatureForSelector:NSSelectorFromString(selectorName)]];
                 [invocation setTarget:_delegate];
                 [invocation setSelector:NSSelectorFromString(selectorName)];

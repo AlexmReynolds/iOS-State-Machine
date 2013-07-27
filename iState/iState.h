@@ -45,12 +45,17 @@ typedef enum iStateEventNoticiationType : NSUInteger {
 @property (nonatomic,strong,readonly) NSString *currentState;
 @property (nonatomic, strong,readonly) NSString *previousState;
 
+// Returns a shared instance of the class
++(id)sharedInstance;
+
+// Creates a new shared instance and setups the state machine
 -(id)initStateMachineForObject:(id)object withOptions:(NSDictionary *)options eventNotificationType:(iStateEventNoticiationType)eventNotificationType;
+
+// used to reset a shared instane mostly for unit testing
++(void)setSharedInstance:(iState *)instance;
 -(void)setSendEventsUsingNotificationType:(iStateEventNoticiationType)type;
 -(BOOL)handle:(SEL)method withArguments:(NSArray *)args;
 -(void)trigger:(NSString *)customEventName withData:(NSDictionary *)data;
 -(BOOL)transition:(NSString *)desiredState;
 -(NSString *)getState;
-
-+(id)sharedInstance;
 @end

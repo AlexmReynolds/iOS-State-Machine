@@ -54,6 +54,7 @@
 
 - (void)tearDown
 {
+    [iState setSharedInstance:nil];
     _blockOnExitCalled = NO;
     _blockOnEnterCalled = NO;
     _delegateTrainsitionCalled= NO;

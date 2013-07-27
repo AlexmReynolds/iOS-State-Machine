@@ -11,22 +11,30 @@
 @implementation iState
 @synthesize previousState = _previousState;
 @synthesize currentState = _currentState;
+static iState *_sharedInstance = nil;
+static dispatch_once_t p = 0;
 
 +(id)sharedInstance
 {
-    static dispatch_once_t p = 0;
-    
-    __strong static id _sharedObject = nil;
-    
+    // dispatch once takes a token 0. When the token has been incremented it won't be called again
     dispatch_once(&p, ^{
-        _sharedObject = [[self alloc] init];
+        if(_sharedInstance == nil){
+            _sharedInstance = [[self alloc] init];
+        }
     });
-    return _sharedObject;
+    return _sharedInstance;
+}
+
+// setSharedInstance is used for unit testing where we can reset our shared instance
++(void)setSharedInstance:(iState *)instance
+{
+    p = 0; // reset our once token
+    _sharedInstance = instance;
 }
 
 -(id)initStateMachineForObject:(id)object withOptions:(NSDictionary *)options eventNotificationType:(iStateEventNoticiationType)eventNotificationType{
     // Fire up a shared instance so we can access it later
-    self = [super init];
+    self = [iState sharedInstance];
     if (self){
         if (eventNotificationType){
             _sendEventsUsingNotificationType = eventNotificationType;

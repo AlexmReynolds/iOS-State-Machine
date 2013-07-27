@@ -124,6 +124,11 @@
 - (IBAction)greenButtonClicked:(id)sender {
     [stateMachine transition:@"green"];
     [stateMachine handle:@selector(goGreen) withArguments:nil];
+    
+    
+    
+    iState *test = [iState sharedInstance];
+    NSLog(@"test state %@", test.currentState);
 }
 
 

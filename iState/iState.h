@@ -51,4 +51,6 @@ typedef enum iStateEventNoticiationType : NSUInteger {
 -(void)trigger:(NSString *)customEventName withData:(NSDictionary *)data;
 -(BOOL)transition:(NSString *)desiredState;
 -(NSString *)getState;
+
++(id)sharedInstance;
 @end

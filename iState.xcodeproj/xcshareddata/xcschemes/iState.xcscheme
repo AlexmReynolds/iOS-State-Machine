@@ -20,6 +20,20 @@
                ReferencedContainer = "container:iState.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E9B58FC61790B7E700D20074"
+               BuildableName = "iStateTests.octest"
+               BlueprintName = "iStateTests"
+               ReferencedContainer = "container:iState.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

@@ -1,5 +1,7 @@
 iState
 ======
+[![Build Status](https://travis-ci.org/AlexmReynolds/iOS-State-Machine.png?branch=master)](https://travis-ci.org/AlexmReynolds/iOS-State-Machine)
+
 iState is a state machine for iOS. There are two version of iState, iState and iElephant.
 
 iState is a NSObject state machine that a class can init to track the class' state machine.

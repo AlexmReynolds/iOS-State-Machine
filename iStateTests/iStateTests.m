@@ -103,7 +103,7 @@
     NSString *desiredState = @"loaded";
     [self.stateMachine transition:desiredState];
     STAssertEquals(self.stateMachine.currentState, desiredState, @"Initial state should be %@",desiredState);
-    STAssertTrue(_delegateTrainsitionCalled, @"Tranition success delegate event called");
+    STAssertFalse(_delegateTrainsitionCalled, @"Tranition success delegate event called");
 }
 -(void)testDelegateTransitionEventFailed
 {
